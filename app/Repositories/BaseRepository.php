@@ -42,10 +42,5 @@ abstract class BaseRepository implements BaseRepositoryInterface
 
     }
 
-    public function delete($id)
-    {
-        $this->model->destroy($id);
-        
-    }
 }
 ?>

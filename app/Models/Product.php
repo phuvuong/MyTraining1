@@ -18,10 +18,11 @@ class Product extends Model
         'product_image',
         'product_status'
     ];
-    // protected $primaryKey = 'product_id';
-
  	protected $table = 'products';
-
+    public function getKeyName()
+    {
+         return 'product_id';
+    }
     public function setProductName($name) 
     {
         $this->product_name = $name;

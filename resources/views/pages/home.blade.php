@@ -64,6 +64,7 @@
                    <form action="{{ route('delete.product',['product_id' => $pro->product_id]) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this')">
                     @csrf
                     @method('delete')
+                    {{--  <input type="hidden" name="page" value="{{$pro->currentPage()}}">  --}}
                     <button type="submit">
                       <i class="fas fa-trash"></i>
                     </button>

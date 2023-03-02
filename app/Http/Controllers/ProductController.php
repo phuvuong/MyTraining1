@@ -12,6 +12,7 @@ use App\Models\Product;
 use App\Http\Requests\ProductRequest;
 use App\Services\ProductService;
 use App\Services\HomeService;
+use Illuminate\Pagination\Paginator;
 class ProductController extends Controller
 {
     protected $productService;
@@ -120,19 +121,23 @@ class ProductController extends Controller
      */
     public function destroy(Request $request,$product_id)
     {
+    
         $this->productService->deleteProduct($product_id);
-        $perPage = $request->query('perPage', 3);
         $currentPage = $request->query('page', 1);
-        $totalProducts = Product::count();
-        $lastPage = ceil($totalProducts / $perPage);
-        $remainingProducts = $totalProducts - ($currentPage - 1) * $perPage;
+        $perPage = 3;
+        $paginator = Product::paginate($perPage);
+        $lastPage = $paginator->lastPage();
+        $remainingProducts = $paginator->total() - ($currentPage - 1) * $perPage;
         if ($remainingProducts == 0 && $currentPage > 1) {
-            return redirect()->route('home', ['page' => $lastPage]); 
+            $redirectPage = $lastPage;
         }
         elseif ($currentPage < $lastPage && $remainingProducts > 0) {
-            return redirect()->route('home', ['page' => $currentPage + 1]); 
+            $redirectPage = $currentPage + 1;
         }
-        return redirect()->route('home', ['page' => $currentPage]);
+        else {
+            $redirectPage = $currentPage;
+        }
+        return Redirect::route('home', ['page' => $redirectPage]);
             
     }
 }

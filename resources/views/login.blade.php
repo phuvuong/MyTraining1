@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {{--  <meta name="viewport" content="width=device-width, initial-scale=1">  --}}
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>AdminLTE 3 | Log in</title>
 
   <!-- Google Font: Source Sans Pro -->
@@ -25,7 +26,9 @@
       <p class="login-box-msg">Sign in to start your session</p>
 
       <form action="{{ route('login.post') }}" method="post">
-        @csrf
+        {{ csrf_field() }}
+        @method('POST')
+
         <div class="input-group mb-3">
           <input type="email" class="form-control" name="email" id="email" placeholder="Email">
           <div class="input-group-append">

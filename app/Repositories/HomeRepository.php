@@ -1,13 +1,13 @@
 <?php
 
 namespace App\Repositories;
-use App\Models\CategoryProduct;
+use App\Models\Category;
 use App\Models\Brand;
 use App\Models\Product;
 
 class HomeRepository extends BaseRepository 
 {
-    public function __construct(CategoryProduct $categoryProduct, Brand $brand , Product $product)
+    public function __construct(Category $categoryProduct, Brand $brand , Product $product)
     {
         parent::__construct($categoryProduct);
         parent::__construct($brand);
@@ -16,7 +16,7 @@ class HomeRepository extends BaseRepository
     }
     public function getActiveCategories()
     {
-        return CategoryProduct::where('category_status', 1)->orderBy('category_id','DESC')->get();
+        return Category::where('category_status', 1)->orderBy('category_id','DESC')->get();
 
     }
     public function getActiveBrands()
@@ -32,7 +32,7 @@ class HomeRepository extends BaseRepository
     }
     public function getCategories()
     {
-        return CategoryProduct::orderBy('category_id','desc')->get();
+        return Category::orderBy('category_id','desc')->get();
 
     }
     public function getBrands()
