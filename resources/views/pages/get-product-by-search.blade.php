@@ -1,5 +1,7 @@
 @extends('welcome')
 @section('content')
+@if (count($products) > 0)
+
 <table>
     <thead>
         <tr>
@@ -20,5 +22,12 @@
         @endforeach
     </tbody>
 </table>
+
+@else
+<div class="alert alert-danger text-center">
+    <p>Không có sản phẩm</p>
+</div>
+@endif
+
 
 @endsection

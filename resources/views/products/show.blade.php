@@ -29,8 +29,9 @@
             <!-- /.card-header -->
             <!-- form start -->
             @foreach($product as $key => $pro)
-            <form method="POST" action="{{URL::to('product/update-product/'.$pro->product_id)}}" id="product-form" enctype="multipart/form-data"> 
+            <form method="POST" action="{{ route('update.product',['product_id' => $pro->product_id]) }}" id="product-form" enctype="multipart/form-data"> 
                 {{ csrf_field() }}
+                @method('PUT')
                @error('msg')
                    <div class="alert alert-danger text-center">{{ $message }}</div>
                @enderror

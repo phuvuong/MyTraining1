@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Repositories;
-
 use App\Models\User;
 
 class UserRepository
@@ -11,11 +10,13 @@ class UserRepository
     public function __construct(User $user)
     {
         $this->user = $user;
+
     }
 
     public function getUser($email)
     {
-         return $this->user->where('email', $email)->first();
+        return $this->user->where('email', $email)->first();
+
     }
 }
 ?>

@@ -19,7 +19,7 @@
   <!-- Main content -->
   <section class="content">
     <div class="card-header">
-        <div><a class="alert alert-success btn-small "  role="alert" href="{{ URL::to('product/add-product') }}">Thêm sản phẩm</a></div>
+        <div><a class="alert alert-success btn-small "  role="alert" href="{{ route('add.product') }}">Thêm sản phẩm</a></div>
     </div>
     <!-- Default box -->
     <div class="card card-solid">
@@ -61,7 +61,6 @@
               <div class="card-footer">
                 <div class="text-right">
                 
-                  {{--  <a href="{{URL::to('/delete-product/'.$pro->product_id)}}" onclick="return confirm('Bạn có chắc là muốn xóa sản phẩm này ko?')" class="btn btn-sm bg-teal" >  --}}
                    <form action="{{ route('delete.product',['product_id' => $pro->product_id]) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this')">
                     @csrf
                     @method('delete')
@@ -74,6 +73,9 @@
                   <a href="{{ route('show.product',['product_id' => $pro->product_id]) }}" class="btn btn-sm btn-primary">
                     <i class="fas fa-user"></i> View Profile
                   </a>
+                  {{--  <a href="{{ route('add.gallery',['product_id' => $pro->product_id]) }}" class="btn btn-sm btn-primary">
+                    Up Gallery
+                  </a>  --}}
                 </div>
               </div>
               

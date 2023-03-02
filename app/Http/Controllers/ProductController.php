@@ -6,24 +6,21 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
-use App\Repositories\ProductRepository;
-use App\Repositories\HomeRepository;
 use App\Models\CategoryProduct;
 use App\Models\Brand;
 use App\Models\Product;
 use App\Http\Requests\ProductRequest;
 use App\Services\ProductService;
-
+use App\Services\HomeService;
 class ProductController extends Controller
 {
     protected $productService;
-    protected $productRepository;
-    protected $homeRepository;
-     public function __construct(ProductService $productService,HomeRepository $homeRepository, ProductRepository $productRepository)
+    protected $homeService;
+     public function __construct(ProductService $productService,HomeService $homeService)
     {
         $this->productService  = $productService ;
-        $this->homeRepository = $homeRepository;
-        $this->productRepository = $productRepository;
+        $this->homeService = $homeService;
+
     }
     /**
      * Display a listing of the resource.
@@ -43,14 +40,14 @@ class ProductController extends Controller
      */
     public function create(Request $request)
     {
-        $cate_product = $this->homeRepository->getActiveCategories();
-       
-        $brand_product = $this->homeRepository->getActiveBrands();
-
+        $cate_product = $this->homeService->getActiveCategories();
+        $brand_product = $this->homeService->getActiveBrands();
         $query = $request->input('search');
+        return view('products.add')
+                ->with(['query' => $query,
+                'cate_product' => $cate_product,
+                'brand_product' => $brand_product]);
 
-        return view('products.add')->with('cate_product',$cate_product)
-        ->with('brand_product',$brand_product) ->with('query',$query);
     }
 
     /**
@@ -62,9 +59,9 @@ class ProductController extends Controller
     public function store(ProductRequest $request)
     {
         $data = $request->all();
-        $this->productService->createProduct($request, $data);
+        $this->productService->createProduct($data);
         Session::put('message','Thêm sản phẩm thành công');
-         return redirect()->route('add.product');
+        return redirect()->route('home');
       
     }
 
@@ -76,15 +73,16 @@ class ProductController extends Controller
      */
     public function show(Request $request,$product_id)
     {
-        $cate_product = $this->homeRepository->getActiveCategories();
-       
-        $brand_product = $this->homeRepository->getActiveBrands();
-
-        $product = $this->productRepository->show_product($product_id);
-
+        $cate_product = $this->homeService->getActiveCategories();
+        $brand_product = $this->homeService->getActiveBrands();
+        $product = $this->productService->showProduct($product_id);
         $query = $request->input('search');
-        return view('products.show')->with('cate_product',$cate_product)
-        ->with('brand_product',$brand_product)->with('product',$product) ->with('query',$query);
+        return view('products.show')
+        ->with(['query' => $query,
+        'cate_product' => $cate_product,
+        'brand_product' => $brand_product,
+        'product'=>$product]);
+
     }
 
     /**
@@ -108,9 +106,10 @@ class ProductController extends Controller
     public function update(ProductRequest $request, $product_id)
     {
         $data = $request->all();
-        $product = $this->productService->updateProduct($request,$data, $product_id);
+        $this->productService->updateProduct($data, $product_id);
         Session::put('message','Cập nhật sản phẩm thành công');
         return redirect()->route('home');
+
     }
 
     /**
@@ -121,17 +120,12 @@ class ProductController extends Controller
      */
     public function destroy(Request $request,$product_id)
     {
-        
         $this->productService->deleteProduct($product_id);
-      
-   
         $perPage = $request->query('perPage', 3);
         $currentPage = $request->query('page', 1);
         $totalProducts = Product::count();
         $lastPage = ceil($totalProducts / $perPage);
         $remainingProducts = $totalProducts - ($currentPage - 1) * $perPage;
-
-       
         if ($remainingProducts == 0 && $currentPage > 1) {
             return redirect()->route('home', ['page' => $lastPage]); 
         }
@@ -142,3 +136,4 @@ class ProductController extends Controller
             
     }
 }
+?>

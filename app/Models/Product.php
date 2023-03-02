@@ -4,12 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Validator;
 
 class Product extends Model
 {
  
-    public $timestamps = false; //set time to false
+    public $timestamps = true; //set time to false
     protected $fillable = [
     	'product_name', 
         'category_id',
@@ -19,31 +18,43 @@ class Product extends Model
         'product_image',
         'product_status'
     ];
-    protected $primaryKey = 'product_id';
+    // protected $primaryKey = 'product_id';
+
  	protected $table = 'products';
 
-    public function setProductName($name) {
+    public function setProductName($name) 
+    {
         $this->product_name = $name;
+        
     }
-    public function getProductName() {
+    public function getProductName() 
+    {
         return $this->product_name;
+
     }
 
-    public function setProductPrice($price) {
+    public function setProductPrice($price) 
+    {
         $this->product_price = $price;
+
     }
-    public function getProductPrice() {
+    public function getProductPrice() 
+    {
         return $this->product_price;
-    }
 
-    public function setProductContent($content) {
+    }
+    public function setProductContent($content) 
+    {
         $this->product_content = $content;
-    }
-    public function getProductContent() {
-        return $this->product_content;
-    }
 
-    public function setProductImage($image) {
+    }
+    public function getProductContent() 
+    {
+        return $this->product_content;
+
+    }
+    public function setProductImage($image) 
+    {
         if($image){
             $get_name_image = $image->getClientOriginalName();
             $name_image = current(explode('.', $get_name_image));
@@ -51,30 +62,45 @@ class Product extends Model
             $image->move('uploads/backend/product', $new_image);
             $this->product_image = $new_image;
         }
+
     }
-    public function getProductImage() {
+    public function getProductImage() 
+    {
         return $this->product_image;
+
     }
     
-    public function setProductStatus($status) {
+    public function setProductStatus($status) 
+    {
         $this->product_status = $status;
+
     }
-    public function getProductStatus() {
+    public function getProductStatus() 
+    {
         return $this->product_status;
+
     }
   
-    public function setCategoryID($productCate) {
+    public function setCategoryID($productCate) 
+    {
         $this->category_id = $productCate;
+
     }
-    public function getCategoryID() {
+    public function getCategoryID() 
+    {
         return $this->category_id;
+
     }
 
-    public function setBrandID($productBrand) {
+    public function setBrandID($productBrand)
+    {
         $this->brand_id = $productBrand;
+
     }
-    public function getBrandID() {
+    public function getBrandID() 
+    {
         return $this->brand_id;
+
     }
     
 }

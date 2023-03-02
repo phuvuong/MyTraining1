@@ -4,60 +4,57 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Brand;
-use App\Repositories\HomeRepository;
-use App\Repositories\ProductRepository;
+use App\Services\HomeService;
 use App\Services\ProductService;
 
 class HomeController extends Controller
 {
     protected $productService;
-    protected $productRepository;
-    protected $homeRepository;
+    protected $homeService;
 
-    public function __construct(ProductService $productService,HomeRepository $homeRepository, ProductRepository $productRepository)
+    public function __construct(ProductService $productService,HomeService $homeService)
     {
-        $this->productService  = $productService ;
-        $this->homeRepository = $homeRepository;
-        $this->productRepository = $productRepository;
+        $this->productService = $productService ;
+        $this->homeService = $homeService;
     }
     public function index(Request $request){
-
-        $cate_product = $this->homeRepository->getActiveCategories();
-       
-        $brand_product = $this->homeRepository->getActiveBrands();
-
-        $product = $this->homeRepository->getProducts();
+        $cate_product = $this->homeService->getActiveCategories();
+        $brand_product = $this->homeService->getActiveBrands();
+        $product = $this->homeService->getProducts();
         $query = $request->input('search');
         
         return view('pages.home')
-        ->with('query',$query)
-        ->with('all_product',$product)
-        ->with('cate_product',$cate_product)
-        ->with('brand_product',$brand_product);
+        ->with(['query' => $query,
+        'all_product' => $product ,
+        'cate_product' => $cate_product,
+        'brand_product' => $brand_product]);
+        
     }
     public function getProductsWithCategories(Request $request,$category_id) {
-        $all_product = $this->homeRepository->getProducts();
-        $cate_product = $this->homeRepository->getActiveCategories();
-        $brand_product = $this->homeRepository->getActiveBrands();
-        $category_by_id = $this->homeRepository->getProductsWithCategories($category_id);
+        $all_product = $this->homeService->getProducts();
+        $cate_product = $this->homeService->getActiveCategories();
+        $brand_product = $this->homeService->getActiveBrands();
+        $category_by_id = $this->homeService->getProductsWithCategories($category_id);
         $query = $request->input('search');
-        return view('pages.get-product-category')->with('cate_product',$cate_product)->with('brand_product',$brand_product)
-            ->with('all_product',$all_product)->with('category_by_id',$category_by_id)->with('query',$query);
+        return view('pages.get-product-category')
+                ->with(['cate_product' => $cate_product, 
+                'brand_product' => $brand_product, 
+                'all_product' => $all_product, 
+                'category_by_id' => $category_by_id, 
+                'query' => $query]);
+                
     }
     public function searchProduct(Request $request){
-        $cate_product = $this->homeRepository->getActiveCategories();
-       
-        $brand_product = $this->homeRepository->getActiveBrands();
-
-
+        $cate_product = $this->homeService->getActiveCategories();
+        $brand_product = $this->homeService->getActiveBrands();
         $query = $request->input('search');
         $products = $this->productService->searchProduct($query);
 
         return view('pages.get-product-by-search')
-        ->with('products',$products)
-        ->with('query',$query)
-        ->with('cate_product',$cate_product)
-        ->with('brand_product',$brand_product);
+                ->with(['products'=>$products,
+                'query'=> $query,
+                'cate_product'=>$cate_product,
+                'brand_product'=>$brand_product]);
 
     }
 }

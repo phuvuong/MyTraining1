@@ -31,7 +31,7 @@
             <!-- /.card-header -->
             <!-- form start -->
             
-            <form method="POST" action="{{ route('add.product') }}" id="product-form" enctype="multipart/form-data"> 
+            <form method="POST" action="{{ route('save.product') }}" id="product-form" enctype="multipart/form-data"> 
                 {{ csrf_field() }}
                @error('msg')
                    <div class="alert alert-danger text-center">{{ $message }}</div>
