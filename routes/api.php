@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\ApiHomeController;
+use App\Http\Controllers\Api\ApiProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +16,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+
+Route::resource('home' , ApiHomeController::class)->only(['index', 'show','update','delete','store']);
+Route::resource('products',ApiProductController::class)
+->names([  'create' => 'api.add.product',
+            'store' => 'api.save.product',
+            'show' => 'api.show.product',
+            'update' => 'api.update.product',
+            'destroy' => 'api.delete.product'])
+->parameters([
+    'products' => 'product_id'
+]);

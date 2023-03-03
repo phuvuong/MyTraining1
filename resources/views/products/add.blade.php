@@ -66,10 +66,6 @@
                       <input type="file" class="custom-file-input" name="product_image" id="exampleInputFile">
                       <label class="custom-file-label" for="exampleInputFile">Chọn File</label>
                     </div>
-                    <div class="input-group-append">
-                      <span class="input-group-text">Tải lên</span>
-                    </div>
-                    
                   </div>
                   @error('product_image')
                     <span style="color:red;" class="product_image_error">{{ $message }}</span>
@@ -85,7 +81,7 @@
                 </div>
                  <div class="form-group">
                     <label for="exampleInputPassword1">Danh mục sản phẩm</label>
-                      <select name="product_cate" class="form-control input-sm m-bot15">
+                      <select name="productCate" class="form-control input-sm m-bot15">
                         @foreach($cate_product as $key => $cate)
                             <option value="{{$cate->category_id}}">{{$cate->category_name}}</option>
                         @endforeach
@@ -94,7 +90,7 @@
                 </div>
                  <div class="form-group">
                     <label for="exampleInputPassword1">Thương hiệu</label>
-                      <select name="product_brand" class="form-control input-sm m-bot15">
+                      <select name="productBrand" class="form-control input-sm m-bot15">
                         @foreach($brand_product as $key => $brand)
                             <option value="{{$brand->brand_id}}">{{$brand->brand_name}}</option>
                         @endforeach

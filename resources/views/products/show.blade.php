@@ -63,17 +63,13 @@
                   <label for="exampleInputFile">File input</label>
                   <div class="input-group">
                     <div class="custom-file">
-                      <input type="file" class="custom-file-input" name="product_image" id="exampleInputFile">
+                      <input type="file" class="custom-file-input" name="product_image" id="exampleInputFile" value="{{$pro->product_image}}">
                       <label class="custom-file-label" for="exampleInputFile">{{$pro->product_image}}</label>
                     </div>
-                    <div class="input-group-append">
-                      <span class="input-group-text">Tải lên</span>
-                    </div>
-                    
                   </div>
                   @error('product_image')
-                    <span style="color:red;" class="product_image_error">{{ $message }}</span>
-                    @enderror
+                  <span style="color:red;" class="product_image_error">{{ $message }}</span>
+                  @enderror
                 </div>
                 
                  <div class="form-group">
@@ -85,7 +81,7 @@
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">Danh mục sản phẩm</label>
-                      <select name="product_cate" class="form-control input-sm m-bot15">
+                      <select name="productCate" class="form-control input-sm m-bot15">
                         @foreach($cate_product as $key => $cate)
                             @if($cate->category_id==$pro->category_id)
                             <option selected value="{{$cate->category_id}}">{{$cate->category_name}}</option>
@@ -98,7 +94,7 @@
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">Thương hiệu</label>
-                      <select name="product_brand" class="form-control input-sm m-bot15">
+                      <select name="productBrand" class="form-control input-sm m-bot15">
                         @foreach($brand_product as $key => $brand)
                              @if($brand->brand_id==$pro->brand_id)
                             <option selected value="{{$brand->brand_id}}">{{$brand->brand_name}}</option>
