@@ -22,11 +22,16 @@ class UserController extends Controller
     public function login(UserRequest $request)
     {
         $credentials = $request->only('email', 'password');
-        if ($this->userService->login($credentials)) {
+
+        if ($user = $this->userService->login($credentials)) {
+            auth()->login($user);
             return redirect()->route('home');
-        } else {
-            return redirect()->back()->withErrors(['msg' => 'Đăng nhập thất bại. Vui lòng thử lại.']);
         }
+
+        return back()->withErrors([
+            'email' => 'Thông tin đăng nhập không chính xác.',
+        ]);
+        
 
     }
     public function logout(Request $request)

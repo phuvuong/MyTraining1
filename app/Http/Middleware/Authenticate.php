@@ -24,10 +24,10 @@ class Authenticate extends Middleware
     }
     public function handle( $request, Closure $next, ...$guards)
     {
-        if (!Auth::check()) {
+        if (!auth()->check()) {
             return redirect()->route('login');
         }
-
         return $next($request);
+        
     }
 }

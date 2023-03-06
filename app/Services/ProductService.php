@@ -25,8 +25,8 @@ class ProductService
             $product->setProductName($data['product_name']);
             $product->setProductPrice($data['product_price']);
             $product->setProductContent($data['product_content']);
-            $product->setCategoryID($data['product_cate']);
-            $product->setBrandID($data['product_brand']);
+            $product->setCategoryID($data['productCate']);
+            $product->setBrandID($data['productBrand']);
             $product->setProductStatus($data['product_status']);
             $image = $data['product_image'];
             $product->setProductImage($image);
@@ -40,8 +40,8 @@ class ProductService
             $product->setProductName($data['product_name']);
             $product->setProductPrice($data['product_price']);
             $product->setProductContent($data['product_content']);
-            $product->setCategoryID($data['product_cate']);
-            $product->setBrandID($data['product_brand']);
+            $product->setCategoryID($data['productCate']);
+            $product->setBrandID($data['productBrand']);
             $product->setProductStatus($data['product_status']);
             $image = $data['product_image'];
             $product->setProductImage($image);

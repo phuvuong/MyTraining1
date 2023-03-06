@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\CategoryProduct;
+use App\Models\Category;
 use Illuminate\Database\Seeder;
 
 class CategorySeeder extends Seeder
@@ -14,15 +14,15 @@ class CategorySeeder extends Seeder
      */
     public function run()
     {
-        CategoryProduct::create([
+        Category::create([
             'category_name' => 'Xe Máy',
             'category_status'=> '1'
         ]);
-        CategoryProduct::create([
+        Category::create([
             'category_name' => 'Ô Tô',
             'category_status'=> '1'
         ]);
-        CategoryProduct::create([
+        Category::create([
             'category_name' => 'Xe Tải',
             'category_status'=> '1'
         ]);

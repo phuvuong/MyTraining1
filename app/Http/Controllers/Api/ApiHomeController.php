@@ -38,9 +38,19 @@ class ApiHomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function getProductsWithCategories(Request $request,$category_id)
     {
-        //
+        $category_by_id = $this->homeService->getProductsWithCategories($category_id);
+        if($category_by_id->isEmpty()){
+            return response()->json([
+                'message' => 'Không có sản phẩm nào',
+            ], 200);
+        }
+        else{
+            return response()->json([
+                'category_by_id' => $category_by_id,
+            ], 200);
+        }
     }
 
     /**
@@ -49,9 +59,17 @@ class ApiHomeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function searchProduct(Request $request)
     {
-        //
+        $query = $request->input('');
+        if (!$query) {
+            return response()->json(['message' => 'Vui lòng nhập từ khóa để tìm kiếm sản phẩm'], 400);
+        }
+        $products = $this->productService->searchProduct($query);
+        if ($products->isEmpty()) {
+            return response()->json(['message' => 'Không tìm thấy sản phẩm nào'], 404);
+        }
+        return response()->json(['products' => $products]);
     }
 
     /**

@@ -31,7 +31,7 @@ Route::resource('products',ProductController::class)
 ->parameters([
     'products' => 'product_id'
 ]);
-Route::middleware('auth:api')->group(function () {
+Route::middleware(['auth:api'])->group(function () {
     Route::controller(HomeController::class)->group(function () { 
         Route::get('/', 'index')->name('home');
     });

@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ApiHomeController;
 use App\Http\Controllers\Api\ApiProductController;
+use App\Http\Controllers\Api\ApiUserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,7 +21,14 @@ use App\Http\Controllers\Api\ApiProductController;
 //     return $request->user();
 // });
 
-Route::resource('home' , ApiHomeController::class)->only(['index', 'show','update','delete','store']);
+
+Route::resource('home' , ApiHomeController::class)->only(['index','']);
+Route::prefix('home')->group(function () {
+    Route::controller(ApiHomeController::class)->group(function () {
+        Route::get('/danh-muc-san-pham/{category_id}', 'getProductsWithCategories')->name('api.show.categoryHome');
+        Route::get('results/', 'searchProduct')->name('api.product.search');
+    });
+});
 Route::resource('products',ApiProductController::class)
 ->names([  'create' => 'api.add.product',
             'store' => 'api.save.product',
@@ -30,3 +38,9 @@ Route::resource('products',ApiProductController::class)
 ->parameters([
     'products' => 'product_id'
 ]);
+Route::post('/login', [ApiUserController::class, 'login'])->name('api.login');
+Route::middleware(['auth:api'])->group(function ()  {
+    Route::controller(ApiUserController::class)->group(function () {
+        Route::post('/logout', 'logout')->name('api.logout')->middleware('api');       
+    });
+});

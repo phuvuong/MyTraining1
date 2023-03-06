@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Hash;
 
 class UserService
 {
@@ -14,14 +14,16 @@ class UserService
     {
         $this->userRepository = $userRepository;
     }
-    public function login(array $credentials)
+    public function login($credentials)
     {
-        if (Auth::attempt($credentials)) {
-            return true;
-        } else {
+        $user = $this->userRepository->getUser($credentials['email']);
+
+        if (!$user || !Hash::check($credentials['password'], $user->password)) {
             return false;
         }
 
+        return $user;
+    
     }
     public function logout()
     {
