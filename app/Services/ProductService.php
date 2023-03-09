@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Repositories\ProductRepositoryInterface;
 use Illuminate\Http\Request;
 use App\Http\Requests\ProductRequest;
 use App\Repositories\ProductRepository;
@@ -13,14 +14,16 @@ use App\Models\Product;
 class ProductService
 {
     protected $productRepository;
-    public function __construct(ProductRepository $productRepository)
+
+    public function __construct(ProductRepositoryInterface $productRepository)
     {
         $this->productRepository = $productRepository;
 
     }
+
     public function createProduct(array $data)
     {
-  
+        if (!empty($data['product_content'])) {
             $product = new Product();
             $product->setProductName($data['product_name']);
             $product->setProductPrice($data['product_price']);
@@ -30,13 +33,14 @@ class ProductService
             $product->setProductStatus($data['product_status']);
             $image = $data['product_image'];
             $product->setProductImage($image);
-            $image = $product->getProductImage();
             return $this->productRepository->createProduct($product);
-         
-    }   
-    public function updateProduct( array $data , $product_id)
+        }
+    }
+
+    public function updateProduct(array $data, $productId)
     {
-            $product = $this->productRepository->findProductById($product_id);
+        $product = $this->productRepository->findProductById($productId);
+        if (!empty($data['product_content'])) {
             $product->setProductName($data['product_name']);
             $product->setProductPrice($data['product_price']);
             $product->setProductContent($data['product_content']);
@@ -45,21 +49,33 @@ class ProductService
             $product->setProductStatus($data['product_status']);
             $image = $data['product_image'];
             $product->setProductImage($image);
-            $image = $product->getProductImage();
             $product->save();
-       
+        }
     }
-    public function deleteProduct($product_id) {
-        $this->productRepository->deleteProduct($product_id);
 
+    public function deleteProduct($productId)
+    {
+        $this->productRepository->deleteProduct($productId);
     }
-    public function searchProduct($query){
+
+    public function searchProduct($query)
+    {
         return $this->productRepository->searchProduct($query);
+    }
 
+    public function showProduct($productId)
+    {
+        return $this->productRepository->showProduct($productId);
     }
-    public function showProduct($product_id){
-        return $this->productRepository->showProduct($product_id);
-        
+
+    public function getProductsWithCategories($categoryId)
+    {
+        return $this->productRepository->getProductsWithCategories($categoryId);
     }
-} 
-?>
+
+    public function getProducts()
+    {
+        return $this->productRepository->getProducts();
+    }
+
+}

@@ -2,54 +2,74 @@
 namespace App\Repositories;
 
 use App\Models\CategoryProduct;
-use App\Models\Brand;
 use App\Models\Product;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Facades\Session;
-use App\Http\Requests\ProductRequest;
 
-class ProductRepository extends BaseRepository
+
+class ProductRepository extends BaseRepository implements ProductRepositoryInterface
 {
+    protected $product;
+
     public function __construct(Product $product)
     {
         parent::__construct($product);
+        $this->product = $product;
 
     }
+
     public function createProduct(Product $product)
     {
         return $product->save();
 
     }
-    public function showProduct($product_id)
+
+    public function showProduct($productId)
     {
-        return Product::where('product_id',$product_id)->get();
+        return $this->product->where('product_id', $productId)->get();
 
     }
-    public function editProduct($product_id)
+
+    public function editProduct($productId)
     {
-        return Product::find($product_id);
+        return $this->product->find($productId);
 
     }
-    public function findProductById( $product_id)
+
+    public function findProductById($productId)
     {
-        return Product::findOrFail($product_id);
+        return $this->product->findOrFail($productId);
 
     }
+
     public function getAllProducts()
     {
-        return Product::count();
+        return $this->product->count();
 
     }
-    public function deleteProduct($product_id)
+
+    public function deleteProduct($productId)
     {
-        Product::where('product_id', $product_id)->delete();
+        $this->product->where('product_id', $productId)->delete();
 
     }
+
     public function searchProduct($query)
     {
-        return Product::query()->where('product_name', 'like', '%' . $query . '%')->get();
+        return $this->product->query()->where('product_name', 'like', '%' . $query . '%')->get();
+
+    }
+
+    public function getProducts()
+    {
+        return $this->product->join('categories', 'categories.category_id', '=', 'products.category_id')
+            ->join('brands', 'brands.brand_id', '=', 'products.brand_id')->paginate(3);
+    }
+
+    public function getProductswithCategories($categoryId)
+    {
+        return $this->product->join('categories', 'products.category_id', '=', 'categories.category_id')
+            ->where('categories.category_id', $categoryId)->get();
 
     }
 }
-?>
+
+

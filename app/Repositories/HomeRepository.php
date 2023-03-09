@@ -1,50 +1,43 @@
 <?php
 
 namespace App\Repositories;
+
 use App\Models\Category;
 use App\Models\Brand;
-use App\Models\Product;
 
-class HomeRepository extends BaseRepository 
+class HomeRepository extends BaseRepository implements HomeRepositoryInterface
 {
-    public function __construct(Category $categoryProduct, Brand $brand , Product $product)
-    {
-        parent::__construct($categoryProduct);
-        parent::__construct($brand);
-        parent::__construct($product);
+    protected $category;
+    protected $brand;
 
+    public function __construct(Category $category, Brand $brand)
+    {
+        parent::__construct($category);
+        parent::__construct($brand);
+        $this->category = $category;
+        $this->brand = $brand;
     }
+
     public function getActiveCategories()
     {
-        return Category::where('category_status', 1)->orderBy('category_id','DESC')->get();
-
+        return $this->category->where('category_status', 1)->orderBy('category_id', 'DESC')->get();
     }
+
     public function getActiveBrands()
     {
-        return Brand::where('brand_status', 1)->orderBy('brand_id','DESC')->get();
-
+        return $this->brand->where('brand_status', 1)->orderBy('brand_id', 'DESC')->get();
     }
-    public function getProducts()
-    {
-        return Product::join('categories','categories.category_id','=','products.category_id')
-        ->join('brands','brands.brand_id','=','products.brand_id')->paginate(3);
 
-    }
     public function getCategories()
     {
-        return Category::orderBy('category_id','desc')->get();
-
+        return $this->category->orderBy('category_id', 'desc')->get();
     }
+
     public function getBrands()
     {
-        return Brand::orderBy('brand_id','desc')->get(); 
-
+        return $this->brand->orderBy('brand_id', 'desc')->get();
     }
-    public function getProductswithCategories($category_id)
-    {
-        return Product::join('categories','products.category_id','=','categories.category_id')
-        ->where('categories.category_id',$category_id)->get();
 
-    }
 }
-?>
+
+

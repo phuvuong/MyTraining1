@@ -2,9 +2,9 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\ApiHomeController;
-use App\Http\Controllers\Api\ApiProductController;
-use App\Http\Controllers\Api\ApiUserController;
+use App\Http\Controllers\Api\HomeController;
+use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,25 +22,23 @@ use App\Http\Controllers\Api\ApiUserController;
 // });
 
 
-Route::resource('home' , ApiHomeController::class)->only(['index','']);
-Route::prefix('home')->group(function () {
-    Route::controller(ApiHomeController::class)->group(function () {
-        Route::get('/danh-muc-san-pham/{category_id}', 'getProductsWithCategories')->name('api.show.categoryHome');
-        Route::get('results/', 'searchProduct')->name('api.product.search');
+Route::post('/login', [UserController::class, 'login'])->name('api.login');
+Route::middleware(['auth.api'])->group(function () {
+    Route::resource('home', HomeController::class)->only(['index', '']);
+    Route::prefix('home')->group(function () {
+        Route::controller(HomeController::class)->group(function () {
+            Route::get('/product-with-category/{categoryId}', 'getProductsWithCategories')->name('api.show.categoryHome');
+            Route::get('results/', 'searchProduct')->name('api.product.search');
+        });
     });
-});
-Route::resource('products',ApiProductController::class)
-->names([  'create' => 'api.add.product',
+    Route::resource('products', ProductController::class)->parameters(['products' => 'productId'])
+        ->names(['create' => 'api.add.product',
             'store' => 'api.save.product',
             'show' => 'api.show.product',
             'update' => 'api.update.product',
-            'destroy' => 'api.delete.product'])
-->parameters([
-    'products' => 'product_id'
-]);
-Route::post('/login', [ApiUserController::class, 'login'])->name('api.login');
-Route::middleware(['auth:api'])->group(function ()  {
-    Route::controller(ApiUserController::class)->group(function () {
-        Route::post('/logout', 'logout')->name('api.logout')->middleware('api');       
+            'destroy' => 'api.delete.product']);
+
+    Route::controller(UserController::class)->group(function () {
+        Route::post('/logout', 'logout')->name('api.logout');
     });
 });

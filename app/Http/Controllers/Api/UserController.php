@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\UserLoggedIn;
 use App\Http\Controllers\Controller;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Event;
 
-class ApiUserController extends Controller
+class UserController extends Controller
 {
     protected $userService;
 
@@ -18,6 +20,7 @@ class ApiUserController extends Controller
         $this->userService = $userService;
 
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -25,23 +28,15 @@ class ApiUserController extends Controller
      */
     public function login(UserRequest $request)
     {
-        $credentials = $request->only('email', 'password');
+        $apiToken = $this->userService->login($request->email, $request->password);
 
-        if (Auth::attempt($credentials)) {
-            $user = Auth::user();
-            $token = auth()->user()->createToken('authToken')->accessToken;
-            return response()->json([
-                'user' => $user,
-                'token' => $token,
-                'token_type' => 'Bearer',
-                'expires_at' => now()->addWeeks(1),
-                'message' => 'Successfully login ',
-            ]);
+        if (!$apiToken) {
+            return response()->json(['message' => 'Invalid email or password'], 401);
         }
+            Event::dispatch(new UserLoggedIn($apiToken));
+        return response()->json(['api_token' => $apiToken,
+            'message' => 'Logged in succesfully']);
 
-        return response()->json([   
-            'error' => 'Thông tin đăng nhập không chính xác.',
-        ], 401);
 
     }
 
@@ -52,15 +47,16 @@ class ApiUserController extends Controller
      */
     public function logout(Request $request)
     {
-        $this->userService->logout($request);
-        return response()->json(['success' => true, 'message' => 'Logout successfully'], 200);
+        $user = Auth::user();
+        $this->userService->logout($user);
+        return response()->json(['message' => 'Logged out']);
 
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -71,7 +67,7 @@ class ApiUserController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -82,7 +78,7 @@ class ApiUserController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -93,8 +89,8 @@ class ApiUserController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -105,7 +101,7 @@ class ApiUserController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

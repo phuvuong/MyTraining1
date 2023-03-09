@@ -22,28 +22,27 @@ use Illuminate\Support\Facades\Route;
 // });
 
 
-Route::resource('products',ProductController::class)
-->names([  'create' => 'add.product',
+
+Route::middleware(['auth:api'])->group(function () {
+    Route::controller(HomeController::class)->group(function () {
+        Route::get('/', 'index')->name('home');
+    });
+    Route::resource('products',ProductController::class)->parameters(['products' => 'productId'])
+        ->names([  'create' => 'add.product',
             'store' => 'save.product',
             'show' => 'show.product',
             'update' => 'update.product',
-            'destroy' => 'delete.product'])
-->parameters([
-    'products' => 'product_id'
-]);
-Route::middleware(['auth:api'])->group(function () {
-    Route::controller(HomeController::class)->group(function () { 
-        Route::get('/', 'index')->name('home');
-    });
+            'destroy' => 'delete.product']);
+
     Route::prefix('home')->group(function () {
         Route::controller(HomeController::class)->group(function () {
             Route::get('/', 'index')->name('home');
-            Route::get('/danh-muc-san-pham/{category_id}', 'getProductsWithCategories')->name('show.categoryHome');
+            Route::get('/product-with-category/{categoryId}', 'getProductsWithCategories')->name('show.categoryHome');
             Route::get('results/', 'searchProduct')->name('product.search');
         });
     });
         Route::controller(UserController::class)->group(function () {
-        Route::get('/logout', 'logout')->name('logout');    
+        Route::get('/logout', 'logout')->name('logout');
     });
 });
 

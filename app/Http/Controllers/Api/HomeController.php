@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Services\HomeService;
 use App\Services\ProductService;
 
-class ApiHomeController extends Controller
+class HomeController extends Controller
 {
     protected $productService;
     protected $homeService;
@@ -17,38 +17,38 @@ class ApiHomeController extends Controller
         $this->productService = $productService;
         $this->homeService = $homeService;
     }
+
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
      */
     public function index()
     {
-        $cate_product = $this->homeService->getActiveCategories();
-        $brand_product = $this->homeService->getActiveBrands();
+        $cateProduct = $this->homeService->getActiveCategories();
+        $brandProduct = $this->homeService->getActiveBrands();
 
         return response()->json([
-            'cate_product' => $cate_product,
-            'brand_product' => $brand_product
+            'cateProduct' => $cateProduct,
+            'brandProduct' => $brandProduct
         ], 200);
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function getProductsWithCategories(Request $request,$category_id)
+    public function getProductsWithCategories(Request $request, $categoryId)
     {
-        $category_by_id = $this->homeService->getProductsWithCategories($category_id);
-        if($category_by_id->isEmpty()){
+        $categoryById = $this->productService->getProductsWithCategories($categoryId);
+        if ($categoryById->isEmpty()) {
             return response()->json([
                 'message' => 'Không có sản phẩm nào',
             ], 200);
-        }
-        else{
+        } else {
             return response()->json([
-                'category_by_id' => $category_by_id,
+                'categoryById' => $categoryById,
             ], 200);
         }
     }
@@ -56,12 +56,12 @@ class ApiHomeController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function searchProduct(Request $request)
     {
-        $query = $request->input('');
+        $query = $request->input('search');
         if (!$query) {
             return response()->json(['message' => 'Vui lòng nhập từ khóa để tìm kiếm sản phẩm'], 400);
         }
@@ -75,7 +75,7 @@ class ApiHomeController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -86,7 +86,7 @@ class ApiHomeController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -97,8 +97,8 @@ class ApiHomeController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -109,7 +109,7 @@ class ApiHomeController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

@@ -4,38 +4,31 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Session;
-use App\Models\CategoryProduct;
-use App\Models\Brand;
 use App\Models\Product;
 use App\Http\Requests\ProductRequest;
 use App\Services\ProductService;
-use App\Services\HomeService;
-use Illuminate\Pagination\Paginator;
 
-class ApiProductController extends Controller
+class ProductController extends Controller
 {
     protected $productService;
     protected $homeService;
-     public function __construct(ProductService $productService,HomeService $homeService)
-    {
-        $this->productService  = $productService ;
-        $this->homeService = $homeService;
 
+    public function __construct(ProductService $productService)
+    {
+        $this->productService = $productService;
     }
+
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
-        $product = $this->homeService->getProducts();
+        $product = $this->productService->getProducts();
         return response()->json([
             'product' => $product
-        ],200);
-
+        ], 200);
     }
 
     /**
@@ -51,37 +44,43 @@ class ApiProductController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(ProductRequest $request)
     {
         $data = $request->all();
-        $this->productService->createProduct($data);
-        return response()->json([
-            'message' => 'Product created successfully!',
-            'data' => $data
-        ], 201);
+        if (empty($data['product_content'])) {
+            return response()->json([
+                'message' => 'Product not created successfully!',
+            ], 201);
+        } else {
+            $this->productService->createProduct($data);
+            return response()->json([
+                'message' => 'Product created successfully!',
+                'data' => $data
+            ], 201);
+        }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show($product_id)
+    public function show($productId)
     {
-        $product = $this->productService->showProduct($product_id);
+        $product = $this->productService->showProduct($productId);
         return response()->json([
             'product' => $product
-        ],200);
+        ], 200);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -92,30 +91,36 @@ class ApiProductController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(ProductRequest $request, $product_id)
+    public function update(ProductRequest $request, $productId)
     {
         $data = $request->all();
-        $this->productService->updateProduct($data, $product_id);
-        return response()->json([
-            'message' => 'Product updated successfully!',
-            'data' => $data
-        ], 201);
+        if (empty($data['product_content'])) {
+            return response()->json([
+                'message' => 'Product not updated successfully!',
+            ], 201);
+        } else {
+            $this->productService->updateProduct($data, $productId);
+            return response()->json([
+                'message' => 'Product updated successfully!',
+                'data' => $data
+            ], 200);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(Request $request,$product_id)
+    public function destroy(Request $request, $productId)
     {
-        
-        $this->productService->deleteProduct($product_id);
+
+        $this->productService->deleteProduct($productId);
         $currentPage = $request->query('page', 1);
         $perPage = 3;
         $paginator = Product::paginate($perPage);
@@ -123,11 +128,9 @@ class ApiProductController extends Controller
         $remainingProducts = $paginator->total() - ($currentPage - 1) * $perPage;
         if ($remainingProducts == 0 && $currentPage > 1) {
             $redirectPage = $lastPage;
-        }
-        elseif ($currentPage < $lastPage && $remainingProducts > 0) {
+        } elseif ($currentPage < $lastPage && $remainingProducts > 0) {
             $redirectPage = $currentPage + 1;
-        }
-        else {
+        } else {
             $redirectPage = $currentPage;
         }
         return response()->json([
@@ -135,4 +138,5 @@ class ApiProductController extends Controller
             'redirectPage' => $redirectPage
         ], 201);
     }
+
 }

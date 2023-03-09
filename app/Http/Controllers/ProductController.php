@@ -13,16 +13,16 @@ use App\Http\Requests\ProductRequest;
 use App\Services\ProductService;
 use App\Services\HomeService;
 use Illuminate\Pagination\Paginator;
+
 class ProductController extends Controller
 {
     protected $productService;
-    protected $homeService;
-     public function __construct(ProductService $productService,HomeService $homeService)
-    {
-        $this->productService  = $productService ;
-        $this->homeService = $homeService;
 
+    public function __construct(ProductService $productService)
+    {
+        $this->productService = $productService;
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -30,8 +30,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-       
-    
+
+
     }
 
     /**
@@ -41,55 +41,58 @@ class ProductController extends Controller
      */
     public function create(Request $request)
     {
-        $cate_product = $this->homeService->getActiveCategories();
-        $brand_product = $this->homeService->getActiveBrands();
+        $cateProduct = $this->homeService->getActiveCategories();
+        $brandProduct = $this->homeService->getActiveBrands();
         $query = $request->input('search');
         return view('products.add')
-                ->with(['query' => $query,
-                'cate_product' => $cate_product,
-                'brand_product' => $brand_product]);
-
+            ->with(['query' => $query,
+                'cateProduct' => $cateProduct,
+                'brandProduct' => $brandProduct]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(ProductRequest $request)
     {
         $data = $request->all();
-        $this->productService->createProduct($data);
-        Session::put('message','Thêm sản phẩm thành công');
-        return redirect()->route('home');
-      
+        if (empty($data['product_content'])) {
+            Session::put('message', 'Thêm sản không phẩm thành công');
+            return redirect()->back();
+        } else {
+            $this->productService->createProduct($data);
+            Session::put('message', 'Thêm sản phẩm thành công');
+            return redirect()->route('home');
+        }
+
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request,$product_id)
+    public function show(Request $request, $productId)
     {
-        $cate_product = $this->homeService->getActiveCategories();
-        $brand_product = $this->homeService->getActiveBrands();
-        $product = $this->productService->showProduct($product_id);
+        $cateProduct = $this->homeService->getActiveCategories();
+        $brandProduct = $this->homeService->getActiveBrands();
+        $product = $this->productService->showProduct($productId);
         $query = $request->input('search');
         return view('products.show')
-        ->with(['query' => $query,
-        'cate_product' => $cate_product,
-        'brand_product' => $brand_product,
-        'product'=>$product]);
-
+            ->with(['query' => $query,
+                'cateProduct' => $cateProduct,
+                'brandProduct' => $brandProduct,
+                'product' => $product]);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -100,29 +103,33 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(ProductRequest $request, $product_id)
+    public function update(ProductRequest $request, $productId)
     {
         $data = $request->all();
-        $this->productService->updateProduct($data, $product_id);
-        Session::put('message','Cập nhật sản phẩm thành công');
-        return redirect()->route('home');
+        if (empty($data['product_content'])) {
+            Session::put('message', ' Cập nhật sản không phẩm thành công');
+            return redirect()->back();
+        } else {
+            $this->productService->updateProduct($data, $productId);
+            Session::put('message', 'Cập nhật sản phẩm thành công');
+            return redirect()->route('home');
+        }
 
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request,$product_id)
+    public function destroy(Request $request, $productId)
     {
-    
-        $this->productService->deleteProduct($product_id);
+        $this->productService->deleteProduct($productId);
         $currentPage = $request->query('page', 1);
         $perPage = 3;
         $paginator = Product::paginate($perPage);
@@ -130,15 +137,13 @@ class ProductController extends Controller
         $remainingProducts = $paginator->total() - ($currentPage - 1) * $perPage;
         if ($remainingProducts == 0 && $currentPage > 1) {
             $redirectPage = $lastPage;
-        }
-        elseif ($currentPage < $lastPage && $remainingProducts > 0) {
+        } elseif ($currentPage < $lastPage && $remainingProducts > 0) {
             $redirectPage = $currentPage + 1;
-        }
-        else {
+        } else {
             $redirectPage = $currentPage;
         }
         return Redirect::route('home', ['page' => $redirectPage]);
-            
     }
+
 }
-?>
+
