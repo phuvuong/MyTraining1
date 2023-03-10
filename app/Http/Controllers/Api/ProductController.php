@@ -50,7 +50,7 @@ class ProductController extends Controller
     public function store(ProductRequest $request)
     {
         $data = $request->all();
-        if (empty($data['product_content'])) {
+        if (empty($data['content'])) {
             return response()->json([
                 'message' => 'Product not created successfully!',
             ], 201);
@@ -98,7 +98,7 @@ class ProductController extends Controller
     public function update(ProductRequest $request, $productId)
     {
         $data = $request->all();
-        if (empty($data['product_content'])) {
+        if (empty($data['content'])) {
             return response()->json([
                 'message' => 'Product not updated successfully!',
             ], 201);
@@ -119,7 +119,6 @@ class ProductController extends Controller
      */
     public function destroy(Request $request, $productId)
     {
-
         $this->productService->deleteProduct($productId);
         $currentPage = $request->query('page', 1);
         $perPage = 3;
@@ -137,6 +136,33 @@ class ProductController extends Controller
             'message' => 'Product deleted successfully!',
             'redirectPage' => $redirectPage
         ], 201);
+    }
+
+    public function getProductsWithCategories(Request $request, $categoryId)
+    {
+        $categoryById = $this->productService->getProductsWithCategories($categoryId);
+        if ($categoryById->isEmpty()) {
+            return response()->json([
+                'message' => 'Không có sản phẩm nào',
+            ], 200);
+        } else {
+            return response()->json([
+                'categoryById' => $categoryById,
+            ], 200);
+        }
+    }
+
+    public function searchProduct(Request $request)
+    {
+        $query = $request->input('search');
+        if (!$query) {
+            return response()->json(['message' => 'Vui lòng nhập từ khóa để tìm kiếm sản phẩm'], 400);
+        }
+        $products = $this->productService->searchProduct($query);
+        if ($products->isEmpty()) {
+            return response()->json(['message' => 'Không tìm thấy sản phẩm nào'], 404);
+        }
+        return response()->json(['products' => $products]);
     }
 
 }

@@ -18,20 +18,19 @@ class ProductService
     public function __construct(ProductRepositoryInterface $productRepository)
     {
         $this->productRepository = $productRepository;
-
     }
 
     public function createProduct(array $data)
     {
-        if (!empty($data['product_content'])) {
+        if (!empty($data['content'])) {
             $product = new Product();
-            $product->setProductName($data['product_name']);
-            $product->setProductPrice($data['product_price']);
-            $product->setProductContent($data['product_content']);
-            $product->setCategoryID($data['productCate']);
-            $product->setBrandID($data['productBrand']);
-            $product->setProductStatus($data['product_status']);
-            $image = $data['product_image'];
+            $product->setProductName($data['name']);
+            $product->setProductPrice($data['price']);
+            $product->setProductContent($data['content']);
+            $product->setCategoryId($data['productCate']);
+            $product->setBrandId($data['productBrand']);
+            $product->setProductStatus($data['status']);
+            $image = $data['image'];
             $product->setProductImage($image);
             return $this->productRepository->createProduct($product);
         }
@@ -40,14 +39,14 @@ class ProductService
     public function updateProduct(array $data, $productId)
     {
         $product = $this->productRepository->findProductById($productId);
-        if (!empty($data['product_content'])) {
-            $product->setProductName($data['product_name']);
-            $product->setProductPrice($data['product_price']);
-            $product->setProductContent($data['product_content']);
-            $product->setCategoryID($data['productCate']);
-            $product->setBrandID($data['productBrand']);
-            $product->setProductStatus($data['product_status']);
-            $image = $data['product_image'];
+        if (!empty($data['content'])) {
+            $product->setProductName($data['name']);
+            $product->setProductPrice($data['price']);
+            $product->setProductContent($data['content']);
+            $product->setCategoryId($data['productCate']);
+            $product->setBrandId($data['productBrand']);
+            $product->setProductStatus($data['status']);
+            $image = $data['image'];
             $product->setProductImage($image);
             $product->save();
         }

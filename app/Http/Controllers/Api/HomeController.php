@@ -3,19 +3,19 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Services\BrandService;
+use App\Services\CategoryService;
 use Illuminate\Http\Request;
 use App\Services\HomeService;
-use App\Services\ProductService;
 
 class HomeController extends Controller
 {
-    protected $productService;
-    protected $homeService;
-
-    public function __construct(ProductService $productService, HomeService $homeService)
+    protected $categoryService;
+    protected $brandService;
+    public function __construct(CategoryService $categoryService, BrandService $brandService)
     {
-        $this->productService = $productService;
-        $this->homeService = $homeService;
+        $this->brandService = $brandService;
+        $this->categoryService = $categoryService;
     }
 
     /**
@@ -25,8 +25,8 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $cateProduct = $this->homeService->getActiveCategories();
-        $brandProduct = $this->homeService->getActiveBrands();
+        $cateProduct = $this->categoryService->getActiveCategories();
+        $brandProduct = $this->brandService->getActiveBrands();
 
         return response()->json([
             'cateProduct' => $cateProduct,
@@ -39,19 +39,7 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getProductsWithCategories(Request $request, $categoryId)
-    {
-        $categoryById = $this->productService->getProductsWithCategories($categoryId);
-        if ($categoryById->isEmpty()) {
-            return response()->json([
-                'message' => 'Không có sản phẩm nào',
-            ], 200);
-        } else {
-            return response()->json([
-                'categoryById' => $categoryById,
-            ], 200);
-        }
-    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -59,18 +47,7 @@ class HomeController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function searchProduct(Request $request)
-    {
-        $query = $request->input('search');
-        if (!$query) {
-            return response()->json(['message' => 'Vui lòng nhập từ khóa để tìm kiếm sản phẩm'], 400);
-        }
-        $products = $this->productService->searchProduct($query);
-        if ($products->isEmpty()) {
-            return response()->json(['message' => 'Không tìm thấy sản phẩm nào'], 404);
-        }
-        return response()->json(['products' => $products]);
-    }
+
 
     /**
      * Display the specified resource.
@@ -116,4 +93,5 @@ class HomeController extends Controller
     {
         //
     }
+
 }

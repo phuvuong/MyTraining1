@@ -15,16 +15,17 @@ class CategorySeeder extends Seeder
     public function run()
     {
         Category::create([
-            'category_name' => 'Xe Máy',
-            'category_status'=> '1'
+            'name' => 'Xe Máy',
+            'status'=> '1'
         ]);
         Category::create([
-            'category_name' => 'Ô Tô',
-            'category_status'=> '1'
+            'name' => 'Ô Tô',
+            'status'=> '1'
         ]);
         Category::create([
-            'category_name' => 'Xe Tải',
-            'category_status'=> '1'
+            'name' => 'Xe Tải',
+            'status'=> '1'
         ]);
+
     }
 }

@@ -1,12 +1,17 @@
 <?php
-    namespace App\Repositories;
+namespace App\Repositories;
 
-    use App\Models\User;
-    use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Http\Request;
 
-    interface UserRepositoryInterface extends BaseRepositoryInterface
-    {
-        public function getUser($email);
-       
-    }
-?>
+interface UserRepositoryInterface extends BaseRepositoryInterface
+{
+    public function getUser($email);
+
+    public function findByApiToken($apiToken);
+
+    public function save($user);
+
+}
+
+

@@ -24,41 +24,40 @@ class ProductRequest extends FormRequest
      */
     public function rules()
     {
-        $product_id = $this->route('product_id');
+        $productId = $this->route('productId');
         // được sử dụng để lấy ID của sản phẩm từ các tham số đường dẫn
         return [
-            'product_name' => [
+            'name' => [
                 'required', 'min:5', 'max:255',
-                Rule::unique('products')->ignore($product_id, 'product_id')
+                Rule::unique('products')->ignore($productId, 'id')
             ],
-            'product_price'=>'required|numeric|gt:0|max:1000000000|min:10000',
-            'product_image'=>'required|mimes:jpeg,jpg,png,gif|mimetypes:image/jpeg,image/png,image/jpg,image/gif|max:10000',
-            'product_content'=>'required|max:255',
+            'price' => 'required|numeric|gt:0|max:1000000000|min:10000',
+            'image' => 'required|mimes:jpeg,jpg,png,gif|mimetypes:image/jpeg,image/png,image/jpg,image/gif|max:10000',
+            'content' => 'max:255',
         ];
-        
     }
+
     public function messages()
     {
         return [
-            'required'=>" :attribute bắt buộc phải nhập",
-            'max'=>" :attribute không được lớn hơn :max",
-            'product_name.min'=>" :attribute phải nhiều hơn :min ký tự ",
-            'min'=>" :attribute nhiều hơn :min ",
-            'unique'=>":attribute đã tồn tại",
-            'numeric'=>":attribute phải là số",
-            'mimes'=>" :attribute không phù hợp",
-            'gt'=>" :attribute phải lớn hơn 0",
+            'required' => " :attribute bắt buộc phải nhập",
+            'max' => " :attribute không được lớn hơn :max",
+            'name.min' => " :attribute phải nhiều hơn :min ký tự ",
+            'min' => " :attribute nhiều hơn :min ",
+            'unique' => ":attribute đã tồn tại",
+            'numeric' => ":attribute phải là số",
+            'mimes' => " :attribute không phù hợp",
+            'gt' => " :attribute phải lớn hơn 0",
         ];
-
     }
+
     public function attributes()
     {
         return [
-            'product_name'=>"Tên sản phẩm",
-            'product_price'=>"Giá sản phẩm",
-            'product_image'=>"Hình ảnh sản phẩm",
-            'product_content'=>"Nội dung sản phẩm "
+            'name' => "Tên sản phẩm",
+            'price' => "Giá sản phẩm",
+            'image' => "Hình ảnh sản phẩm",
+            'content' => "Nội dung sản phẩm "
         ];
-        
     }
 }

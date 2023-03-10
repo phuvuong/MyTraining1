@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Repositories\UserRepository;
 use App\Repositories\UserRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -40,6 +39,7 @@ class UserService
     {
         return bin2hex(random_bytes(30));
     }
+
 }
 
 

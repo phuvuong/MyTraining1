@@ -18,13 +18,12 @@ class UserController extends Controller
     public function __construct(UserService $userService)
     {
         $this->userService = $userService;
-
     }
 
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
     public function login(UserRequest $request)
     {
@@ -36,8 +35,6 @@ class UserController extends Controller
             Event::dispatch(new UserLoggedIn($apiToken));
         return response()->json(['api_token' => $apiToken,
             'message' => 'Logged in succesfully']);
-
-
     }
 
     /**
@@ -50,7 +47,6 @@ class UserController extends Controller
         $user = Auth::user();
         $this->userService->logout($user);
         return response()->json(['message' => 'Logged out']);
-
     }
 
     /**
@@ -108,4 +104,5 @@ class UserController extends Controller
     {
         //
     }
+
 }

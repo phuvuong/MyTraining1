@@ -34,4 +34,5 @@ class SendLoginSuccessNotification implements ShouldQueue
             $message->to($email, $name)->subject('Đăng nhập thành công');
         });
     }
+
 }

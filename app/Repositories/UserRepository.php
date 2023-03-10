@@ -17,7 +17,6 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
     public function getUser($email)
     {
         return $this->user->where('email', $email)->first();
-
     }
 
     public function findByApiToken($apiToken)
@@ -31,4 +30,4 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
     }
 }
 
-?>
+

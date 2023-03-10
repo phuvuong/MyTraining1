@@ -13,7 +13,7 @@ class CreateBrand extends Command
      *
      * @var string
      */
-    protected $signature = 'make:brand {brand_name} {brand_status} ';
+    protected $signature = 'make:brand {name} {status} ';
 
     /**
      * The console command description.
@@ -40,11 +40,12 @@ class CreateBrand extends Command
     public function handle()
     {
         $brand = new Brand;
-        $brand->brand_name = $this->argument('brand_name');
-        $brand->brand_status = $this->argument('brand_status');
+        $brand->name = $this->argument('name');
+        $brand->status = $this->argument('status');
 
         $brand->save();
 
-        $this->info('Brand' . $brand->brand_name . 'created successfully!');
+        $this->info('Brand ' . $brand->name . ' created successfully!');
     }
+
 }

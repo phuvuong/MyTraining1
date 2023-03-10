@@ -16,13 +16,11 @@ class UserController extends Controller
     public function __construct(UserService $userService)
     {
         $this->userService = $userService;
-
     }
 
     public function getLoginForm()
     {
         return view('login');
-
     }
 
     public function login(UserRequest $request)
@@ -44,8 +42,8 @@ class UserController extends Controller
         $user = Auth::user();
         $this->userService->logout($user);
         return redirect('/login');
-
     }
+
 }
 
 

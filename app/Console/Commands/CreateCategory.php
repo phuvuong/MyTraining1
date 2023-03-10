@@ -12,7 +12,7 @@ class CreateCategory extends Command
      *
      * @var string
      */
-    protected $signature = 'make:category {category_name} {category_status}';
+    protected $signature = 'make:category {name} {status}';
 
     /**
      * The console command description.
@@ -39,11 +39,12 @@ class CreateCategory extends Command
     public function handle()
     {
         $category = new Category();
-        $category->category_name = $this->argument('category_name');
-        $category->category_status = $this->argument('category_status');
+        $category->name = $this->argument('name');
+        $category->status = $this->argument('status');
 
         $category->save();
 
-        $this->info('Category' . $category->category_name . 'created successfully!');
+        $this->info('Category ' . $category->name . ' created successfully!');
     }
+
 }

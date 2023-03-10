@@ -26,7 +26,7 @@ Route::post('/login', [UserController::class, 'login'])->name('api.login');
 Route::middleware(['auth.api'])->group(function () {
     Route::resource('home', HomeController::class)->only(['index', '']);
     Route::prefix('home')->group(function () {
-        Route::controller(HomeController::class)->group(function () {
+        Route::controller(ProductController::class)->group(function () {
             Route::get('/product-with-category/{categoryId}', 'getProductsWithCategories')->name('api.show.categoryHome');
             Route::get('results/', 'searchProduct')->name('api.product.search');
         });
