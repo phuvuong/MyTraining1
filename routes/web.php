@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\UserController;
+
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +17,36 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+// Route::get('/', function () {
+//     return view('pages.home');
+// });
+
+
+
+Route::middleware(['auth:api'])->group(function () {
+    Route::controller(HomeController::class)->group(function () {
+        Route::get('/', 'index')->name('home');
+    });
+    Route::resource('products',ProductController::class)->parameters(['products' => 'productId'])
+        ->names([  'create' => 'add.product',
+            'store' => 'save.product',
+            'show' => 'show.product',
+            'update' => 'update.product',
+            'destroy' => 'delete.product']);
+
+    Route::prefix('home')->group(function () {
+        Route::controller(HomeController::class)->group(function () {
+            Route::get('/', 'index')->name('home');
+            Route::get('/product-with-category/{categoryId}', 'getProductsWithCategories')->name('show.categoryHome');
+            Route::get('results/', 'searchProduct')->name('product.search');
+        });
+    });
+        Route::controller(UserController::class)->group(function () {
+        Route::get('/logout', 'logout')->name('logout');
+    });
+});
+
+Route::controller(UserController::class)->group(function () {
+    Route::get('/login', 'getLoginForm')->name('login');
+    Route::post('/login', 'login')->name('login.post');
 });
